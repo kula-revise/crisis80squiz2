@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Stuck | The Crisis of Apartheid in the 1980s | Kula Revise</title>
+<style>
+  /* ============================================================
+     KULA SOURCE ENGINE v3: TOKEN CONTRACT
+     This file is fixed mechanism. Do not edit it per series.
+     A skin sets the THIRTEEN identity variables in the block below
+     and nothing else is required of it.
+
+     Two accents, split by job:
+       --a1  accent one: navigation, progress, emphasis, option letters,
+             the primary button, the story date. The "structure" accent.
+       --a2  accent two: anything the learner earned. Correct answers,
+             the running summary, breakdown bars, key facts, the last
+             story line. The "reward" accent.
+     Set --a1-rgb / --a2-rgb to the SAME colours as r,g,b (no #), because
+     the tints, washes and shadows are built from them.
+     ============================================================ */
+
+  :root {
+    /* ---- THE IDENTITY CONTRACT. A skin overrides these thirteen. ---- */
+    --sand:  #F2E9D9;   /* page background */
+    --paper: #FBF6EB;   /* cards */
+    --cut:   #FFFCF4;   /* insets, sources, carousels */
+    --ink:   #1B2A33;   /* body text */
+    --clay:  #8C4A2F;   /* stage tags, quiet labels */
+    --fade:  #7B7263;   /* muted text, captions */
+    --a1: #B4622D;   --a1-rgb: 180,98,45;
+    --a2: #1F6B58;   --a2-rgb: 31,107,88;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans:  system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --mono:  var(--sans);
+
+    /* ---- DERIVED TOKENS. A skin should not need to touch these. ----
+       They exist because the engine used to hardcode fourteen literal
+       colours, which is what made every glossary definition and every
+       source expander invisible in dark mode. Everything below now
+       tracks the identity variables above, so a skin that sets --fade
+       and --ink correctly gets a readable dark mode for free. ---- */
+    --muted:      var(--fade);          /* secondary body text: kt-def, toggle-body, disc-body, cover-line */
+    --hair:       rgba(0,0,0,0.12);     /* progress track, quiet rules */
+    --hair-strong:rgba(0,0,0,0.28);     /* dashed divider inside an expander */
+    --on-ink:     var(--paper);         /* text sitting on an --ink ground */
+    --on-a1:      var(--paper);         /* text sitting on an --a1 ground */
+    --on-a2:      var(--paper);         /* text sitting on an --a2 ground */
+    --ink-deep:   #12202a;              /* --ink one step darker, button hover */
+    --a2-deep:    #164C3F;              /* --a2 one step darker, button hover */
+    --ok-bg:      rgba(var(--a2-rgb),0.13);  /* a correct option, a placed item */
+    --no-bg:      rgba(140,74,47,0.13);      /* a wrong option, a misplaced item */
+    /* Skill chips. a = the entry-level skill (Extract, Argue, Evidence, Recall).
+       b = the middle skill (Interpret, Understand). c = unassessed instinct.
+       The top skill (Evaluate, Weigh, Apply) sits on a solid accent ground. */
+    --chip-a-bg: rgba(var(--a1-rgb),0.16);  --chip-a-fg: var(--a1);
+    --chip-b-bg: rgba(var(--a2-rgb),0.16);  --chip-b-fg: var(--a2);
+    --chip-c-bg: rgba(0,0,0,0.06);
+    --scrim:  rgba(27,42,51,0.5);       /* modal backdrop */
+    --inset:  rgba(255,255,255,0.4);    /* sort column well */
+
+    /* Legacy aliases. Older skins and the quiz shell reference these. */
+    --copper: var(--a1);
+    --malachite: var(--a2);
+  }
+
+  /* ---- DARK MODE TOKEN RE-POINT ---------------------------------------
+     The skin supplies body.alt values for the thirteen identity variables.
+     Everything derived re-points here, once, for every unit. This is the
+     engine-level fix for the three defects logged in MOBILE_FIXES_HANDOVER:
+     a skin no longer needs the patch block at all.
+     ------------------------------------------------------------------- */
+  body.alt {
+    --muted:      var(--fade);
+    --hair:       rgba(255,255,255,0.14);
+    --hair-strong:rgba(255,255,255,0.26);
+    --on-ink:     var(--sand);
+    --on-a1:      var(--sand);
+    --on-a2:      var(--sand);
+    --ink-deep:   var(--ink);
+    --a2-deep:    var(--a2);
+    --ok-bg:      rgba(var(--a2-rgb),0.20);
+    --no-bg:      rgba(var(--a1-rgb),0.18);
+    --chip-a-bg:  rgba(var(--a1-rgb),0.22);  --chip-a-fg: var(--ink);
+    --chip-b-bg:  rgba(var(--a2-rgb),0.22);  --chip-b-fg: var(--ink);
+    --chip-c-bg:  rgba(255,255,255,0.10);
+    --scrim:  rgba(0,0,0,0.62);
+    --inset:  rgba(255,255,255,0.05);
+  }
+  /* Key term chips keep a visible edge once the ground inverts. */
+  body.alt .kt-term { border-color: var(--hair-strong); }
+  body.alt .kt-term summary { color: var(--ink); }
+  body.alt .kt-label { border-top-color: var(--hair-strong); }
+  /* v2 dimmed the options a learner did not pick; at 0.45 they vanish on a dark ground. */
+  body.alt .option.dimmed, body.alt .option-btn.dimmed { opacity: 0.72; }
+
+  /* ---- MODE TOGGLE. Fixed bottom right, 44px minimum tap target. ---- */
+  .mode-toggle {
+    position: fixed; bottom: 0.9rem; right: 0.9rem; z-index: 40;
+    display: flex; align-items: center; gap: 0.4rem;
+    font-family: var(--sans); font-size: 0.66rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.62rem 0.75rem; min-height: 44px;
+    background: var(--paper); color: var(--fade);
+    border: 1px solid var(--hair-strong); cursor: pointer;
+    box-shadow: 0 2px 12px var(--scrim);
+  }
+  .mode-toggle:hover { color: var(--ink); border-color: var(--a1); }
+  .mode-toggle:focus-visible { outline: 2px solid var(--a1); outline-offset: 2px; }
+  .mode-toggle svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.6; }
+  @media (max-width: 520px) {
+    .mode-toggle { min-height: 44px; padding: 0.62rem 0.7rem; font-size: 0.64rem; }
+  }
+  @media print { .mode-toggle { display: none; } }
+
+  /* ---- STICKY HEADER AT 360px --------------------------------------
+     .top-meta is a flex row and flex children default to min-width auto,
+     so at 360px the eyebrow and the step counter used to overlap. The
+     eyebrow now takes the free space and truncates rather than pushing
+     the counter off. Renders correctly at 375px and above either way,
+     which is why this was missed. 360 is common on mid-range Android.
+     ----------------------------------------------------------------- */
+  .top-meta { gap: 0.7rem; flex-wrap: nowrap; }
+  .top-meta > * { min-width: 0; }
+  .top-meta #lesson-tag, .top-meta .top-label {
+    flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .top-meta .top-count { flex: 0 0 auto; white-space: nowrap; }
+  @media (max-width: 380px) {
+    .top-meta { font-size: 0.62rem; letter-spacing: 0.09em; }
+  }
+
+/* THE CRISIS OF APARTHEID IN THE 1980s: drawing office
+
+   Second attempt. The first one, plan and elevation, is kept as a teaser skin
+   in skins/teaser/. It read well on its own and sat outside the family in a
+   set, because it broke the five things the three built skins hold in common:
+
+     1. the ground is ruled linearly at very low opacity, never dotted
+     2. every card carries ONE accent stripe, never a stacked motif
+     3. labels are filled or tracked, never outlined
+     4. card and source edges stay intact, never clipped
+     5. a sans display over a serif body, or a sans over a sans
+
+   This version keeps the palette and the metaphor and rebuilds them inside
+   that grammar. Distinct in look, familiar in construction, which is what the
+   register actually asks for.
+
+   Register check. Black Consciousness is the other strand of this same CAPS
+   topic and holds Frank Talk: manila, typewriter mono on every label, no
+   borders and no shadows. Nothing here goes near it. Black Power holds the
+   placard press, which is why this identity stays off the poster route even
+   though the decade is full of posters. Cold War rules at 45 degrees, Angola
+   vertically, US Civil Rights horizontally. Congo holds Ore Seam's warm radial
+   washes. Coming of Democracy holds dark navy with orange and green.
+
+   The metaphor is still the one the topic supplies: a government redrawing its
+   own plan into three chambers and local wards, and people drawing a second
+   plan over the top of it, street by street.
+
+   Signature moves, each absent from the register:
+     - a crossed plan-paper rule, where the others rule in one direction only
+     - the single card stripe broken into three segments, for the three chambers
+     - sources framed twice, an outer rule and a hairline inner rule, like a
+       drawing sitting inside its frame
+     - aubergine and viridian, a pairing nothing else holds
+*/
+
+:root {
+  --sand:  #E7E5DE;   /* page: drafting stone */
+  --paper: #FAF9F5;   /* cards: the sheet */
+  --cut:   #DFDDD4;   /* insets, sources, carousels */
+  --ink:   #211F26;
+  --clay:  #5E5A66;   /* stage tags, quiet labels */
+  --fade:  #7C7885;
+  /* aubergine for structure, viridian for anything the learner earned */
+  --a1: #5B3A6E;  --a1-rgb: 91,58,110;
+  --a2: #2C6B57;  --a2-rgb: 44,107,87;
+  --serif: 'Source Serif 4', 'Charter', Georgia, serif;
+  --sans:  'IBM Plex Sans', 'Inter', system-ui, -apple-system, Arial, sans-serif;
+  --mono:  var(--sans);
+}
+
+/* 1. Ground: plan paper. Linear like the rest of the family, but crossed,
+      which none of the three built units do. */
+body {
+  font-family: var(--serif) !important;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(33,31,38,0.030) 34px 35px),
+    repeating-linear-gradient(0deg,  transparent 0 34px, rgba(33,31,38,0.030) 34px 35px) !important;
+}
+h1, h2, h3 {
+  font-family: var(--sans) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.008em !important;
+}
+
+/* 2. Cards: square, hairline, one stripe at the head. The stripe is broken into
+      three segments, which is the whole of the motif and the only place it
+      appears on a card. */
+.card, .source, .stat-wrap, .carousel, .kt {
+  border-radius: 0 !important;
+  border: 1px solid rgba(91,58,110,0.22) !important;
+  box-shadow: none !important;
+}
+.card, .stat-wrap, .carousel {
+  border-top: 3px solid transparent !important;
+  background-color: var(--paper) !important;
+  background-image:
+    linear-gradient(90deg,
+      var(--a1) 0 44%, transparent 44% 47%,
+      var(--a1) 47% 78%, transparent 78% 81%,
+      var(--a1) 81% 100%) !important;
+  background-origin: border-box !important;
+  background-clip: border-box !important;
+  background-size: 100% 3px !important;
+  background-position: 0 0 !important;
+  background-repeat: no-repeat !important;
+}
+
+/* 3. Labels: filled aubergine plates, uppercase and tracked. Cold War fills in
+      sentence case and Angola tracks in mono, so this sits between the two and
+      matches neither. */
+.stage-tag, .kt-label, .expl-label, .pop-label {
+  font-family: var(--sans) !important;
+  font-weight: 600 !important;
+  font-size: 0.63rem !important;
+  letter-spacing: 0.11em !important;
+  text-transform: uppercase !important;
+  background: var(--a1) !important;
+  color: #F7F4F8 !important;
+  border-radius: 0 !important;
+  padding: 0.26rem 0.62rem !important;
+  display: inline-block;
+}
+.cover-eyebrow, .results-eyebrow, .top-meta {
+  font-family: var(--sans) !important;
+  color: var(--clay) !important;
+  letter-spacing: 0.09em !important;
+}
+.marks {
+  font-family: var(--sans) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  color: var(--a2) !important;
+}
+
+/* 4. A source is a drawing inside its frame: framed twice, edges intact. */
+.source {
+  background: var(--cut) !important;
+  border: 2px solid var(--a1) !important;
+  border-radius: 0 !important;
+  padding: 1.25rem 1.3rem !important;
+  box-shadow: inset 0 0 0 1px var(--cut), inset 0 0 0 2px rgba(91,58,110,0.32) !important;
+}
+.source, .source p, .source li { font-family: var(--serif) !important; }
+.source-attr {
+  font-family: var(--sans) !important;
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  line-height: 1.45 !important;
+  text-transform: none !important;
+  color: var(--ink) !important;
+  background: transparent;
+  border-bottom: 1px solid rgba(91,58,110,0.34);
+  border-radius: 0;
+  padding: 0 0 0.62rem 0;
+  margin-bottom: 0.95rem;
+}
+.toggle-btn {
+  font-family: var(--sans) !important;
+  border-radius: 0 !important;
+  border: 1px solid var(--a1) !important;
+  color: var(--a1) !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* 5. Cover flourish: the three chambers at full size, stepped. The engine's
+      three-dot arc fan is replaced, which every skin in the family does. */
+.header-block::before, .cover-arc, .cover-fan { display: none !important; }
+.rule, .cover-rule, .flourish, .story-rule {
+  width: 176px !important;
+  height: 11px !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    linear-gradient(90deg, var(--a1) 0 100%),
+    linear-gradient(90deg, var(--a1) 0 100%),
+    linear-gradient(90deg, var(--a1) 0 100%) !important;
+  background-repeat: no-repeat !important;
+  background-size: 176px 3px, 110px 2px, 60px 2px !important;
+  background-position: 0 0, 0 5px, 0 9px !important;
+}
+
+/* The engine reveals the three cover lines as inline spans on a stagger, which
+   runs them together as one filling paragraph. Each span gets its own line so
+   they arrive one at a time. The engine is untouched: only display changes. */
+.cover-line {
+  font-style: normal !important;
+  color: var(--clay) !important;
+  min-height: 9rem;
+  max-width: 32rem;
+}
+.cover-line span {
+  display: block;
+  margin-bottom: 0.85rem;
+  transition: opacity 0.55s ease, transform 0.55s ease !important;
+  transform: translateY(5px);
+}
+.cover-line span.vis { transform: translateY(0); }
+.cover-line span:last-child { color: var(--ink); font-weight: 600; }
+@media (max-width: 520px) { .cover-line { min-height: 12rem; } }
+
+.cover-title, .q-text, .story-line, .story-num { font-family: var(--sans) !important; }
+.story-num { letter-spacing: -0.01em !important; }
+.chip {
+  border-radius: 0 !important;
+  font-family: var(--sans) !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* 6. Buttons */
+.btn-begin {
+  background: var(--a1) !important;
+  color: #F7F4F8 !important;
+  border: 2px solid var(--a1) !important;
+  border-radius: 0 !important;
+  font-family: var(--sans) !important;
+  font-weight: 600 !important;
+}
+.btn-begin:hover { background: #452B54 !important; border-color: #452B54 !important; }
+.primary-btn, .secondary-btn, .section-btn, .primary-btn-small {
+  border-radius: 0 !important;
+  font-family: var(--sans) !important;
+}
+
+.stat-num {
+  color: var(--a1) !important;
+  font-family: var(--sans) !important;
+  font-weight: 700 !important;
+}
+.stat-label { color: var(--clay) !important; font-family: var(--sans) !important; }
+
+/* Figures. Caption reads left at a measure that holds on a phone. */
+.figure figcaption {
+  text-align: left !important;
+  max-width: 34rem;
+  margin-left: auto; margin-right: auto;
+  font-family: var(--sans) !important;
+  font-size: 0.82rem !important;
+  color: var(--clay) !important;
+  border-top: 2px solid var(--a1);
+  padding-top: 0.6rem;
+}
+.figure img, .figure svg {
+  border: 1px solid rgba(91,58,110,0.4) !important;
+  border-radius: 0 !important;
+}
+/* Original illustrations are inline SVG so they inherit the thirteen tokens and
+   invert with the rest of the page. They need the same box the photographs get. */
+.figure svg {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  margin: 0 auto;
+  background: var(--paper);
+  font-family: var(--sans);
+}
+.figure svg text { fill: var(--ink); }
+
+/* ---- DARK MODE ------------------------------------------------------------
+   The same thirteen, and nothing else. engine/tokens.css re-points every
+   derived token, so the old state-colour patch block is not carried here.
+   --fade is chosen to measure above 7 to 1 against --paper, because it is what
+   --muted inherits and --muted is every expander body. Measured at 7.3.
+
+   The three built skins each carry a legacy state-colour patch block naming
+   body.alt .option.correct, .explanation, the chips and every button. Checked
+   against a shipped Angola file: it carries BOTH that patch block AND the
+   engine's DARK MODE TOKEN RE-POINT, and the engine CSS reads --ok-bg, --no-bg,
+   --chip-a-bg, --hair and --on-a2 rather than literals. So the patch block is
+   redundant in those units and is correctly absent here. */
+body.alt {
+  --sand:  #17161B;
+  --paper: #201E26;
+  --cut:   #29272F;
+  --ink:   #EAE7EE;
+  --clay:  #A49EAE;
+  --fade:  #B0AABA;
+  --a1: #B08BC7;  --a1-rgb: 176,139,199;
+  --a2: #6BBD9C;  --a2-rgb: 107,189,156;
+}
+body.alt {
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(234,231,238,0.038) 34px 35px),
+    repeating-linear-gradient(0deg,  transparent 0 34px, rgba(234,231,238,0.038) 34px 35px) !important;
+}
+body.alt .card, body.alt .source, body.alt .stat-wrap,
+body.alt .carousel, body.alt .kt { border-color: rgba(176,139,199,0.30) !important; }
+body.alt .card, body.alt .stat-wrap, body.alt .carousel {
+  background-color: var(--paper) !important;
+  background-image:
+    linear-gradient(90deg,
+      var(--a1) 0 44%, transparent 44% 47%,
+      var(--a1) 47% 78%, transparent 78% 81%,
+      var(--a1) 81% 100%) !important;
+  background-size: 100% 3px !important;
+  background-position: 0 0 !important;
+}
+body.alt .source {
+  box-shadow: inset 0 0 0 1px var(--cut), inset 0 0 0 2px rgba(176,139,199,0.34) !important;
+}
+body.alt .source-attr { border-bottom-color: rgba(176,139,199,0.36); }
+body.alt .stage-tag, body.alt .kt-label,
+body.alt .expl-label, body.alt .pop-label { color: #17161B !important; }
+body.alt .btn-begin { color: #17161B !important; }
+body.alt .btn-begin:hover { background: #C6A6D9 !important; border-color: #C6A6D9 !important; }
+/* ---- The two engine rules the token re-point cannot rescue ----------------
+   Correction to the note above. engine/tokens.css re-points every DERIVED token,
+   so the legacy state-colour patch block is redundant for options, chips and
+   explanations. It cannot help where the engine uses --ink or --sand directly
+   as a BACKGROUND, because those two are meant to flip. Audited both engine
+   stylesheets: exactly four rules do it. .option and .inter-item use --sand and
+   stay correct, because they sit on --paper and the relationship holds either
+   way round. .btn-begin is already overridden above. That leaves two, and both
+   invert into a light slab on a dark page. Angola patches the same two. */
+body.alt .primary-btn {
+  background: var(--cut) !important;
+  color: var(--ink) !important;
+  border: 1px solid rgba(176,139,199,0.38) !important;
+}
+body.alt .primary-btn:hover { background: #2C2934 !important; }
+body.alt .primary-btn .btn-title { color: var(--ink) !important; }
+body.alt .primary-btn .btn-sub   { color: var(--fade) !important; }
+body.alt .primary-btn .btn-num,
+body.alt .primary-btn .btn-arrow { color: var(--a1) !important; }
+body.alt .chip-apply {
+  background: rgba(234,231,238,0.16) !important;
+  color: var(--ink) !important;
+}
+
+/* Light serif at 0.95rem thins out on a dark ground. The explanation block is
+   the longest reading on any screen, so it gets the full --ink value and a
+   touch more size and leading rather than inheriting a muted tone. */
+body.alt .expl-text, body.alt .disc-body { color: var(--ink) !important; }
+body.alt .expl-text { font-size: 1rem !important; line-height: 1.75 !important; }
+
+body.alt .figure img {
+  border-color: rgba(176,139,199,0.4) !important;
+  filter: brightness(0.9) contrast(1.02);
+}
+body.alt .figure svg { border-color: rgba(176,139,199,0.4) !important; }
+
+/* The toggle is fixed bottom right and lands on Continue on a short viewport.
+   Kept above the 44px tap minimum at 360px, which is where this last failed. */
+.mode-toggle {
+  bottom: 1rem; right: 1rem;
+  border-radius: 0 !important;
+  font-family: var(--sans) !important;
+  min-height: 44px;
+  min-width: 44px;
+}
+body { padding-bottom: 4.5rem !important; }
+@media (max-width: 520px) {
+  .mode-toggle { bottom: 0.7rem; right: 0.7rem; padding: 0.5rem 0.7rem; font-size: 0.62rem; }
+}
+@media (max-width: 380px) {
+  .top-meta { min-width: 0; }
+  .source { padding: 1rem 0.95rem !important; }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      repeating-linear-gradient(90deg, var(--hair) 0 1px, transparent 1px 5px),
+      radial-gradient(ellipse at top right, rgba(var(--a1-rgb),0.10) 0%, transparent 58%),
+      radial-gradient(ellipse at bottom left, rgba(var(--a2-rgb),0.09) 0%, transparent 58%),
+      var(--sand);
+    padding: 2rem 1rem 3rem;
+    font-family: var(--serif);
+    color: var(--ink); line-height: 1.6; -webkit-text-size-adjust: 100%;
+    -webkit-user-select: none; user-select: none;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+  .header-block { text-align: center; margin-bottom: 2rem; padding: 1.4rem 0 1.2rem; position: relative; }
+  .header-block::before {
+    content: ""; position: absolute; z-index: 0; top: 0; left: 50%; transform: translateX(-50%);
+    width: 260px; height: 92px; pointer-events: none;
+    background: repeating-radial-gradient(circle at 50% 100%, rgba(var(--a1-rgb),0.30) 0 2px, transparent 2px 15px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 92%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 92%);
+  }
+  .eyebrow { font-family: var(--sans); position: relative; z-index: 1; font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--clay); font-weight: 700; margin-bottom: 0.9rem; }
+  .masthead { position: relative; z-index: 1; font-size: clamp(2.2rem,6.4vw,3.4rem); font-weight: 800; line-height: 1.04; letter-spacing: -0.025em; }
+  .sub { position: relative; z-index: 1; font-size: 1rem; color: var(--fade); margin-top: 0.6rem; }
+  .rule { width: 92px; height: 9px; margin: 1.6rem auto 0;
+    background:
+      radial-gradient(circle at 9px 4.5px, var(--a1) 0 4px, transparent 4.5px),
+      radial-gradient(circle at 46px 4.5px, var(--a1) 0 4px, transparent 4.5px),
+      radial-gradient(circle at 83px 4.5px, var(--a1) 0 4px, transparent 4.5px); }
+  .intro-box { background: var(--paper); border: 1px solid var(--hair); border-left: 5px solid var(--a2); padding: 1.4rem 1.6rem; margin-bottom: 2rem; }
+  .intro-label { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--a2); font-weight: 700; margin-bottom: 0.6rem; }
+  .intro-text { line-height: 1.68; font-size: 1rem; }
+  .key-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-bottom: 2.2rem; }
+  .key-item { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.85rem; background: var(--paper); border: 1px solid var(--hair); }
+  .chip { font-family: var(--sans); display: inline-block; padding: 0.22rem 0.7rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; width: fit-content; }
+  .chip-recall { background: var(--chip-a-bg); color: var(--chip-a-fg); }
+  .chip-understand { background: var(--chip-b-bg); color: var(--chip-b-fg); }
+  .chip-apply { background: var(--ink); color: var(--on-ink); }
+  .key-desc { font-size: 0.83rem; color: var(--fade); }
+  .sections-label { font-family: var(--sans); font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fade); text-align: center; margin-bottom: 1.2rem; font-weight: 700; }
+  .primary-btn { font-family: var(--sans); width: 100%; display: flex; align-items: center; gap: 1rem; padding: 1.3rem 1.5rem; background: var(--ink); color: var(--on-ink); border: none; cursor: pointer; font-family: inherit; text-align: left; transition: all 0.2s; margin-bottom: 1rem; }
+  .primary-btn:hover { background: var(--ink-deep); transform: translateX(4px); }
+  .btn-num { font-family: var(--sans); font-size: 1.4rem; color: var(--a1); font-weight: 800; min-width: 35px; }
+  .btn-txt { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
+  .btn-title { font-family: var(--sans); font-size: 1.15rem; font-weight: 700; }
+  .btn-sub { font-family: var(--sans); font-size: 0.82rem; color: var(--muted); }
+  .btn-arrow { font-size: 1.3rem; color: var(--a1); }
+  .section-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .section-btn { display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.1rem; background: transparent; border: 1px solid var(--hair-strong); cursor: pointer; font-family: inherit; text-align: left; transition: all 0.2s; color: var(--ink); }
+  .section-btn:hover { background: var(--paper); border-color: var(--a1); }
+  .section-roman { font-family: var(--sans); color: var(--a1); font-weight: 800; min-width: 35px; font-size: 0.95rem; }
+  .section-name { flex: 1; font-size: 0.95rem; }
+  .section-count { font-size: 0.78rem; color: var(--fade); letter-spacing: 0.05em; }
+  .footer { text-align: center; font-size: 0.79rem; color: var(--fade); margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--hair); line-height: 1.6; }
+
+  .quiz-top { margin-bottom: 1.5rem; }
+  .quiz-eyebrow { font-family: var(--sans); display: flex; justify-content: space-between; align-items: baseline; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--a2); font-weight: 700; margin-bottom: 0.55rem; gap: 1rem; }
+  .quiz-progress { color: var(--fade); font-weight: 500; letter-spacing: 0.04em; text-transform: none; }
+  .progress-track { height: 3px; background: var(--hair); overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--a1); transition: width 0.35s ease; }
+  .quiz-card { background: var(--paper); border: 1px solid var(--hair); border-left: 5px solid var(--a1); padding: 1.7rem 1.5rem; margin-bottom: 1.3rem; }
+  .quiz-meta { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  .section-tag { font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay); font-weight: 700; }
+  .question-text { font-size: 1.24rem; line-height: 1.4; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 1.3rem; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; }
+  .option-btn { display: flex; align-items: flex-start; gap: 0.85rem; padding: 1rem 1.05rem; background: var(--sand); border: 1px solid var(--hair); cursor: pointer; font-family: inherit; text-align: left; font-size: 0.97rem; line-height: 1.55; color: var(--ink); transition: all 0.18s; width: 100%; }
+  .option-btn:hover:not(:disabled) { background: var(--cut); border-color: var(--a1); }
+  .option-btn:disabled { cursor: default; }
+  .option-btn.selected { background: var(--cut); border-color: var(--a1); border-width: 2px; padding: 0.94rem 0.99rem; }
+  .option-btn.correct { background: var(--ok-bg); border-color: var(--a2); border-width: 2px; padding: 0.94rem 0.99rem; }
+  .option-btn.wrong { background: var(--no-bg); border-color: var(--clay); border-width: 2px; padding: 0.94rem 0.99rem; }
+  .option-btn.dimmed { opacity: 0.48; }
+  body.alt .option-btn.dimmed { opacity: 0.72; }
+  .opt-letter { font-weight: 800; color: var(--a1); min-width: 1.1rem; }
+  .opt-text { flex: 1; }
+  .opt-mark { font-weight: 700; font-size: 1.1rem; }
+  .explanation { background: var(--cut); border: 1px solid var(--hair); border-left: 5px solid var(--a2); padding: 1.15rem 1.2rem; margin-bottom: 0.3rem; }
+  .expl-label { font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--a2); font-weight: 700; margin-bottom: 0.5rem; }
+  .expl-text { line-height: 1.68; font-size: 0.95rem; }
+  .quiz-actions { display: flex; justify-content: space-between; gap: 0.8rem; margin-top: 1.2rem; }
+  .secondary-btn { padding: 0.8rem 1.2rem; background: transparent; border: 1px solid var(--hair-strong); color: var(--ink); font-family: inherit; font-size: 0.92rem; font-weight: 600; cursor: pointer; }
+  .secondary-btn:hover:not(:disabled) { background: var(--paper); }
+  .secondary-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .primary-btn-small { padding: 0.85rem 1.5rem; background: var(--a2); border: none; color: var(--on-a2); font-family: inherit; font-size: 0.95rem; cursor: pointer; font-weight: 700; }
+  .primary-btn-small:hover:not(:disabled) { background: var(--a2-deep); }
+  .primary-btn-small:disabled { opacity: 0.35; cursor: not-allowed; }
+  .quiz-foot { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .link-btn { background: transparent; border: none; color: var(--fade); font-family: inherit; font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+  .score-tally { font-size: 0.82rem; color: var(--fade); font-weight: 600; }
+
+  .score-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.9rem; margin-bottom: 1.4rem; }
+  .score-block { background: var(--paper); border: 1px solid var(--hair); border-top: 4px solid var(--a1); padding: 1.3rem 0.8rem; text-align: center; }
+  .score-num { font-size: 2.6rem; font-weight: 800; color: var(--ink); line-height: 1; letter-spacing: -0.03em; }
+  .score-num.red { color: var(--clay); }
+  .score-den { font-size: 1.1rem; color: var(--fade); font-weight: 500; }
+  .score-label { font-family: var(--sans); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fade); margin-top: 0.5rem; font-weight: 700; }
+  .compare-line { text-align: center; font-weight: 700; color: var(--a2); background: var(--paper); border: 1px solid rgba(var(--a2-rgb),0.25); padding: 0.9rem 1rem; margin-bottom: 1.5rem; }
+  .score-word { font-family: var(--sans); font-size: 1.3rem; font-weight: 800; color: var(--a2); line-height: 2; letter-spacing: -0.01em; }
+  .grade-desc { text-align: center; margin-bottom: 1.6rem; padding: 0 0.5rem; line-height: 1.65; }
+  .breakdown { background: var(--paper); border: 1px solid var(--hair); padding: 1.3rem; margin-bottom: 1.4rem; }
+  .breakdown-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--a2); font-weight: 700; margin-bottom: 1rem; text-align: center; }
+  .breakdown-row { display: grid; grid-template-columns: 1fr 96px 44px; gap: 0.7rem; align-items: center; margin-bottom: 0.7rem; font-size: 0.86rem; }
+  .breakdown-name { font-weight: 600; }
+  .breakdown-bar { height: 9px; background: var(--hair); overflow: hidden; }
+  .breakdown-fill { height: 100%; background: var(--a1); transition: width 0.4s; }
+  .breakdown-score { color: var(--fade); text-align: right; font-weight: 700; }
+  .review-all-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fade); font-weight: 700; margin-bottom: 1rem; text-align: center; }
+  .review-card { background: var(--paper); border: 1px solid var(--hair); padding: 1.1rem 1.2rem; margin-bottom: 0.8rem; border-left: 4px solid var(--fade); }
+  .review-card.got { border-left-color: var(--a2); }
+  .review-card.missed { border-left-color: var(--clay); }
+  .review-q { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; line-height: 1.4; }
+  .review-a { font-size: 0.88rem; line-height: 1.55; margin-bottom: 0.3rem; }
+  .review-a .lab { font-weight: 700; }
+  .review-a.yours-wrong { color: var(--clay); }
+  .review-a.right { color: var(--a2); }
+  .review-actions { margin-top: 1.6rem; }
+  .hidden { display: none !important; }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- MENU -->
+  <div id="menu-screen">
+    <div class="header-block">
+      <div class="eyebrow">Kula Revise &middot; Grade 12 &middot; The 1980s</div>
+      <h1 class="masthead">What Stuck</h1>
+      <div class="sub" id="masthead-sub">After Lesson 5</div>
+      <div class="rule"></div>
+    </div>
+    <div class="intro-box">
+      <div class="intro-label">Before you start</div>
+      <p class="intro-text"><span id="intro-body"></span></p>
+    </div>
+    <div class="key-row">
+      <div class="key-item"><span class="chip chip-recall">Recall</span><span class="key-desc">The fact itself: a date, name or policy</span></div>
+      <div class="key-item"><span class="chip chip-understand">Understand</span><span class="key-desc">What the fact means or why it happened</span></div>
+      <div class="key-item"><span class="chip chip-apply">Apply</span><span class="key-desc">Spot what is wrong with a claim</span></div>
+    </div>
+    <div>
+      <div class="sections-label">Choose what to answer</div>
+      <button class="primary-btn" data-filter="all">
+        <span class="btn-num">I.</span>
+        <span class="btn-txt"><span class="btn-title">Full check</span><span class="btn-sub">All 18 questions &middot; all 5 sections</span></span>
+        <span class="btn-arrow">&rarr;</span>
+      </button>
+      <div class="section-list" id="section-list"></div>
+    </div>
+    <div class="footer">About 12 minutes for the full set. Have your score from the first check ready.</div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz-screen" class="hidden">
+    <div class="quiz-top">
+      <div class="quiz-eyebrow"><span id="quiz-section-name"></span><span class="quiz-progress" id="quiz-progress"></span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-meta"><span class="section-tag" id="section-tag"></span><span class="chip" id="difficulty-chip"></span></div>
+      <h2 class="question-text" id="question-text"></h2>
+      <div class="options" id="options-container"></div>
+      <div class="explanation hidden" id="explanation"><div class="expl-label">Why</div><div class="expl-text" id="expl-text"></div></div>
+      <div class="quiz-actions">
+        <button class="secondary-btn" id="prev-btn">&larr; Previous</button>
+        <button class="primary-btn-small" id="action-btn">Submit answer</button>
+      </div>
+    </div>
+    <div class="quiz-foot">
+      <button class="link-btn" id="exit-btn">Exit to menu</button>
+      <span class="score-tally" id="score-tally">Score so far: 0 / 0</span>
+    </div>
+  </div>
+
+  <!-- REVIEW -->
+  <div id="review-screen" class="hidden">
+    <div class="header-block">
+      <div class="eyebrow">After the lessons</div>
+      <h1 class="masthead" style="font-size: clamp(1.9rem,5vw,2.8rem);">Where You Stand</h1>
+      <div class="rule"></div>
+    </div>
+    <div class="score-row">
+      <div class="score-block"><div class="score-num"><span id="score-correct">0</span><span class="score-den">/<span id="score-total">0</span></span></div><div class="score-label">Correct</div></div>
+      <div class="score-block"><div class="score-num"><span id="score-percent">0</span><span class="score-den">%</span></div><div class="score-label">Accuracy</div></div>
+      <div class="score-block"><div class="score-word" id="score-grade">-</div><div class="score-label">Band</div></div>
+    </div>
+    <div class="grade-desc" id="grade-desc"></div>
+    <p class="compare-line hidden" id="compare-line"></p>
+    <div class="breakdown"><div class="breakdown-label">By tier</div><div id="level-rows"></div></div>
+    <div class="breakdown"><div class="breakdown-label">By section</div><div id="breakdown-rows"></div></div>
+    <div><div class="review-all-label">Every question</div><div id="review-cards"></div></div>
+    <div class="review-actions">
+      <button class="primary-btn" id="restart-btn"><span class="btn-txt"><span class="btn-title">Return to menu</span><span class="btn-sub">Try another section or retake the full test</span></span><span class="btn-arrow">&#8635;</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* kula: re-entry guard. Every declaration below is function scoped, so a
+   viewer that re-runs this script re-initialises instead of throwing a
+   redeclaration SyntaxError. */
+(function(){
+const MODE = "b";
+const INTRO = "The same eighteen facts, approached from the other side. Nothing here is a reworded version of the first check, so recognising the shape of a question will not help you. Have the score you wrote down before Lesson 1 ready.";
+const SECTIONS = [
+  "Reform and its contradictions",
+  "The new structures",
+  "Organising against them",
+  "The townships and the emergency",
+  "Pressure from outside"
+];
+const QUESTIONS = [
+  {
+    "question": "The government claimed communists were plotting to seize power in South Africa. What did it call that alleged plot?",
+    "options": [
+      "A total onslaught, met by a total strategy",
+      "A rolling mass action, met by emergency rule",
+      "A people's war, met by constructive engagement",
+      "An ungovernability campaign, met by township reform"
+    ],
+    "correct": 0,
+    "explanation": "Onslaught was the government's word for the threat. Strategy was its word for the answer. Naming a plot first is what made the military build-up and the bannings look necessary. Option {opt1} borrows a phrase the resistance used about its own campaigns. You can tell them apart, because one names a threat and one names a plan.",
+    "id": 1,
+    "slot": 1,
+    "section": "Reform and its contradictions",
+    "tier": "Recall"
+  },
+  {
+    "question": "About how many people a year were being charged with breaking the pass laws by the early 1980s?",
+    "options": [
+      "About 540 000 people",
+      "About 54 000 people",
+      "About 5 400 people",
+      "About 240 000 people"
+    ],
+    "correct": 0,
+    "explanation": "540 000 a year, and the number is the argument. Courts and prisons could not process that many cases, so prosecutions actually fell in the early 1980s. Option {opt1} is out by a factor of ten and still sounds enormous, and that is why it tempts you. The system did not end because the government changed its mind. It ended because it had stopped working.",
+    "id": 2,
+    "slot": 2,
+    "section": "Reform and its contradictions",
+    "tier": "Recall"
+  },
+  {
+    "question": "Legal recognition was supposed to keep worker demands under control. What did it produce instead?",
+    "options": [
+      "Open organisation that spread into township politics",
+      "A steady fall in the number of strikes",
+      "A workforce that stopped joining unions altogether",
+      "Employers taking direct control of union leadership"
+    ],
+    "correct": 0,
+    "explanation": "Recognition let unions recruit in daylight and build across whole industries. Membership went from 57 000 registered black members in 1980 to over half a million by 1984. Option {opt1} is what the Commission hoped for, and that is why it tempts you. What you are looking at is a reform that handed the other side a legal structure.",
+    "id": 3,
+    "slot": 3,
+    "section": "Reform and its contradictions",
+    "tier": "Understand"
+  },
+  {
+    "question": "What is wrong with this claim: 'The Wiehahn Commission recognised black unions in order to strengthen the resistance movement'?",
+    "options": [
+      "It reverses the purpose, which was to manage labour",
+      "It names the wrong commission, which dealt with education",
+      "It gives the wrong decade, since this was 1969",
+      "It assumes recognition happened, which the state actually refused"
+    ],
+    "correct": 0,
+    "explanation": "An outcome and an intention are not the same thing. Recognition was meant to give employers and the state a channel they could control. What followed was the opposite, and that is the interesting part. Option {opt1} is the sort of detail that feels checkable, so it pulls you in.",
+    "id": 4,
+    "slot": 4,
+    "section": "Reform and its contradictions",
+    "tier": "Apply"
+  },
+  {
+    "question": "Why did township residents come to see the new Community Councillors as collaborators?",
+    "options": [
+      "They collected the rents that funded township administration",
+      "They were appointed directly by white government officials",
+      "They were drawn entirely from the homeland leadership",
+      "They ran the schools that pupils were boycotting"
+    ],
+    "correct": 0,
+    "explanation": "The councils were financed out of money taken from local residents. So a councillor came to your door asking for rent while services stayed poor. That put a black official between the state and the street, because that is exactly the position the Act created. Option {opt1} describes the older system the Act ended.",
+    "id": 5,
+    "slot": 5,
+    "section": "The new structures",
+    "tier": "Recall"
+  },
+  {
+    "question": "Africans were excluded from the tricameral parliament. Where did government policy say their political rights belonged?",
+    "options": [
+      "In the homelands and the township Community Councils",
+      "In the House of Delegates alongside Indian representatives",
+      "In the House of Assembly alongside white representatives",
+      "In the provincial councils that the constitution retained"
+    ],
+    "correct": 0,
+    "explanation": "The homelands and the Community Councils, which is why the two reforms belong together. The 1982 Act and the 1983 constitution were one design: local structures for Africans, a parliament seat for none of them. That exclusion is the single fact that turned reform into a mobilising issue. Option {opt1} would have meant inclusion, and the house does exist, so it reads plausibly to you.",
+    "id": 6,
+    "slot": 6,
+    "section": "The new structures",
+    "tier": "Understand"
+  },
+  {
+    "question": "What is wrong with this claim: 'About a fifth of Indian voters turned out in 1984, which proves the tricameral parliament was popular'?",
+    "options": [
+      "A low turnout shows rejection, not popular support",
+      "The turnout in 1984 was actually far higher",
+      "Coloured and Indian voters were not allowed to vote",
+      "The first tricameral elections were held only in 1987"
+    ],
+    "correct": 0,
+    "explanation": "The figure is right and the conclusion is upside down. About a fifth of Indian voters turning out is the boycott working, not the parliament being accepted. The UDF and the unions had campaigned for exactly that result. Option {opt1} would rescue the sentence and it is wrong on the facts, because you are being asked what a low turnout shows.",
+    "id": 7,
+    "slot": 7,
+    "section": "The new structures",
+    "tier": "Apply"
+  },
+  {
+    "question": "The UDF was formed to oppose one particular piece of government legislation. Which one?",
+    "options": [
+      "The new constitution creating the tricameral parliament",
+      "The Internal Security Act passed the year before",
+      "The law abolishing the pass system in 1986",
+      "The act creating the independent homeland of Ciskei"
+    ],
+    "correct": 0,
+    "explanation": "The tricameral constitution, and the timing is the point. The UDF was launched in the year the constitution went through and campaigned to keep people away from the polls. Option {opt2} comes later in the decade, so it cannot explain a founding in 1983, and you need the dates beside each other.",
+    "id": 8,
+    "slot": 8,
+    "section": "Organising against them",
+    "tier": "Recall"
+  },
+  {
+    "question": "COSATU adopted the Freedom Charter in 1987. What did that alignment signal?",
+    "options": [
+      "That the federation had taken a political side",
+      "That the federation had dropped its workplace demands",
+      "That the federation had merged with the banned ANC",
+      "That the federation had accepted the tricameral constitution"
+    ],
+    "correct": 0,
+    "explanation": "Adopting the Charter put COSATU alongside the UDF and the non-racial democratic tradition. Wages and conditions stayed on the agenda, so this was an addition rather than a swap. Option {opt1} is the trap, because it reads an alignment as an abandonment. A union that takes a political line has not stopped being a union, and you should say both things.",
+    "id": 9,
+    "slot": 9,
+    "section": "Organising against them",
+    "tier": "Recall"
+  },
+  {
+    "question": "What did a low turnout in 1984 give the resistance that winning seats could not?",
+    "options": [
+      "Evidence that the reform lacked consent from below",
+      "Direct control of the House of Representatives chamber",
+      "A legal route to challenge the constitution in court",
+      "Access to the state budget for township services"
+    ],
+    "correct": 0,
+    "explanation": "A boycott turns an election into a measurement. A turnout near a fifth among Indian voters is a number the government had to publish itself, and it travelled abroad. Option {opt1} is what taking part might have offered, because a seat is easier to picture than a number you can quote.",
+    "id": 10,
+    "slot": 10,
+    "section": "Organising against them",
+    "tier": "Understand"
+  },
+  {
+    "question": "What is wrong with this claim: 'The UDF replaced the trade unions as the main force of resistance in the 1980s'?",
+    "options": [
+      "Unions were affiliates and kept their own power base",
+      "The unions had already been banned by that stage",
+      "The UDF was a government body created to divide them",
+      "The UDF and the unions never worked together at all"
+    ],
+    "correct": 0,
+    "explanation": "The UDF worked with the unions rather than over them. Many unions affiliated, and COSATU stayed a separate federation with its own strikes and stay-aways. Replacement is the wrong word for an alliance, and that is what the sentence gets wrong. Option {opt3} pushes too far the other way, so it fails for the opposite reason. When you read a claim about two organisations, ask whether it describes a merger or a partnership.",
+    "id": 11,
+    "slot": 11,
+    "section": "Organising against them",
+    "tier": "Apply"
+  },
+  {
+    "question": "Two local grievances came together to set off the protests of 1984. What were they?",
+    "options": [
+      "A school boycott and a boycott of rent payments",
+      "A bus fare rise and a boycott of white shops",
+      "A pass raid and a strike at the gold mines",
+      "A wage cut and a boycott of homeland elections"
+    ],
+    "correct": 0,
+    "explanation": "Schools and rents, which is why the revolt spread so fast. Both grievances reached every household in a township, and neither needed a national organisation to start. Rent went to the Community Councils, so refusing to pay attacked the reform itself. Option {opt1} names real tactics of the period, and you can date all of them after 1984.",
+    "id": 12,
+    "slot": 12,
+    "section": "The townships and the emergency",
+    "tier": "Recall"
+  },
+  {
+    "question": "What extra powers did the emergency regulations give the police and the army?",
+    "options": [
+      "To detain without charge and censor news reports",
+      "To try civilians in specially created military courts",
+      "To deport detainees to the independent homeland territories",
+      "To dissolve the Community Councils in affected districts"
+    ],
+    "correct": 0,
+    "explanation": "Detention without charge, and control over reporting. The second one is easy to forget and it is half the design. Thousands were held, including union, community and student leaders, and some spent long stretches in solitary confinement. Option {opt1} sounds plausible because soldiers were in the townships, and it is not what the regulations did. When you meet emergency powers, ask what they did to information as well as to people.",
+    "id": 13,
+    "slot": 13,
+    "section": "The townships and the emergency",
+    "tier": "Recall"
+  },
+  {
+    "question": "People's courts were controversial at the time. What was the main objection to them?",
+    "options": [
+      "Residents could be tried and punished without safeguards",
+      "They were run directly by the security police force",
+      "They only heard disputes between neighbouring street committees",
+      "They charged fees that township residents could not pay"
+    ],
+    "correct": 0,
+    "explanation": "Supporters called them a real system of justice. Critics called them kangaroo courts, where a neighbour could be tried unfairly and even executed. Both descriptions are of the same institution, and that is what makes this a real argument rather than a right answer. Option {opt1} misses that these bodies grew because the state had withdrawn. You are allowed to say a thing was necessary and dangerous at the same time.",
+    "id": 14,
+    "slot": 14,
+    "section": "The townships and the emergency",
+    "tier": "Understand"
+  },
+  {
+    "question": "What is wrong with this claim: 'Detention without trial in the 1980s was used only against the leaders of banned political parties'?",
+    "options": [
+      "Union, student and community leaders were detained too",
+      "Detention without trial was not legal in this period",
+      "Only people already convicted of crimes were detained",
+      "Detention was used only inside the independent homelands"
+    ],
+    "correct": 0,
+    "explanation": "The net was far wider than party leadership. Trade unionists, community organisers, students and church figures were held, and in 1987 more than 1 400 children were in detention. That breadth is the whole point of the tactic, because it was aimed at organisation rather than at parties. Option {opt1} sounds cautious and is simply false, and you can disprove it with the detention figures for children.",
+    "id": 15,
+    "slot": 15,
+    "section": "The townships and the emergency",
+    "tier": "Apply"
+  },
+  {
+    "question": "Which measures did the European Union apply against South Africa in the later 1980s?",
+    "options": [
+      "Bans on Krugerrands and on coal, iron and steel",
+      "A complete ban on all trade with South Africa",
+      "The expulsion of South Africa from the United Nations",
+      "A ban on South African participation in the Olympics"
+    ],
+    "correct": 0,
+    "explanation": "Gold Krugerrands, coal, iron and steel. Limited rather than total, and that limit is worth carrying, because it is exactly what critics of sanctions pointed at. Option {opt1} overstates what was done, so it is the quickest way to lose the argument. When you write about sanctions, name the specific goods and you sound like somebody who has read something.",
+    "id": 16,
+    "slot": 16,
+    "section": "Pressure from outside",
+    "tier": "Recall"
+  },
+  {
+    "question": "Business leaders wanted the government to announce meaningful reform in 1985. Why did they want it?",
+    "options": [
+      "Political instability was damaging trade and foreign confidence",
+      "They had been promised seats in the new parliament",
+      "They wanted the trade unions banned once again",
+      "They were required to do so by American law"
+    ],
+    "correct": 0,
+    "explanation": "Their reasons were commercial before they were moral. Unrest, sanctions pressure and a falling gold price were hitting profits all at once. So a section of white business began pushing in the same direction as the resistance, for entirely different reasons. Option {opt1} invents a bargain that was never on the table, because business wanted stability rather than seats, and you should say which.",
+    "id": 17,
+    "slot": 17,
+    "section": "Pressure from outside",
+    "tier": "Understand"
+  },
+  {
+    "question": "Why was 1989 described as the year the government lost control?",
+    "options": [
+      "Marches and stay-aways went ahead without effective repression",
+      "The security forces had been withdrawn from the townships",
+      "The National Party had already lost a general election",
+      "The homelands had refused to cooperate with Pretoria further"
+    ],
+    "correct": 0,
+    "explanation": "Bans and restrictions were openly ignored and very little was done about it. About 40 000 people marched in central Cape Town and similar marches followed elsewhere. A law that is not enforced has stopped working, and that is what had changed. Option {opt1} goes too far, because the forces were still there and simply did not act, and you should say ignored rather than withdrawn.",
+    "id": 18,
+    "slot": 18,
+    "section": "Pressure from outside",
+    "tier": "Understand"
+  }
+];
+const TIER_MAP = {
+  Recall: { cls: 'chip-recall', label: 'Recall' },
+  Understand: { cls: 'chip-understand', label: 'Understand' },
+  Apply: { cls: 'chip-apply', label: 'Apply' }
+};
+const LEVELS = ['Recall','Understand','Apply'];
+
+// MODE is baked at build time: 'a' = Check 1 (before), 'b' = Check 2 (after).
+const IS_AFTER = (typeof MODE !== 'undefined' && MODE === 'b');
+
+// Read an optional prior score passed by the platform: ?prior=N
+function priorScore(){
+  try {
+    const p = new URLSearchParams(window.location.search).get('prior');
+    if(p === null) return null;
+    const n = parseInt(p, 10);
+    return (Number.isFinite(n) && n >= 0 && n <= 18) ? n : null;
+  } catch(e){ return null; }
+}
+
+// Intro copy differs by sitting.
+document.getElementById('intro-body').textContent = INTRO;
+
+const state = { filter: 'all', list: [], current: 0, answers: {}, order: {} };
+
+const menu = document.getElementById('menu-screen');
+const quiz = document.getElementById('quiz-screen');
+const review = document.getElementById('review-screen');
+
+function roman(n){ const m=[[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']]; let r=''; for(const [v,s] of m){ while(n>=v){ r+=s; n-=v; } } return r; }
+
+function buildMenu(){
+  const list = document.getElementById('section-list');
+  list.innerHTML = '';
+  SECTIONS.forEach((sec, i) => {
+    const count = QUESTIONS.filter(q => q.section === sec).length;
+    const btn = document.createElement('button');
+    btn.className = 'section-btn';
+    btn.innerHTML = `<span class="section-roman">${roman(i+2)}.</span><span class="section-name">${sec}</span><span class="section-count">${count} Q</span>`;
+    btn.addEventListener('click', () => startQuiz(sec));
+    list.appendChild(btn);
+  });
+  document.querySelector('[data-filter="all"]').addEventListener('click', () => startQuiz('all'));
+}
+
+function startQuiz(filter){
+  state.filter = filter;
+  state.list = filter === 'all' ? QUESTIONS.slice() : QUESTIONS.filter(q => q.section === filter);
+  state.current = 0; state.answers = {}; state.order = {};
+  menu.classList.add('hidden'); review.classList.add('hidden'); quiz.classList.remove('hidden');
+  renderQuestion();
+}
+
+// Resolve {optN} tokens to the letter that content-option N carries after shuffling.
+// Returns plain text (letters only), so textContent stays safe.
+function resolveOpts(text, order){
+  if(!text) return text;
+  return text.replace(/\{opt(\d+)\}/g, (m, n) => {
+    const displayPos = order.indexOf(parseInt(n, 10));
+    return displayPos >= 0 ? String.fromCharCode(65 + displayPos) : m;
+  });
+}
+
+function shuffledOrder(q){
+  if(!state.order[q.id]){
+    const arr = q.options.map((_,i)=>i);
+    for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
+    state.order[q.id]=arr;
+  }
+  return state.order[q.id];
+}
+
+function renderQuestion(){
+  const q = state.list[state.current];
+  const answered = state.answers[q.id] !== undefined;
+  const diff = TIER_MAP[q.tier];
+  document.getElementById('quiz-section-name').textContent = state.filter === 'all' ? 'Full test' : q.section;
+  document.getElementById('quiz-progress').textContent = `Question ${state.current+1} of ${state.list.length}`;
+  document.getElementById('progress-fill').style.width = ((state.current+1)/state.list.length*100)+'%';
+  document.getElementById('section-tag').textContent = q.section;
+  const chip = document.getElementById('difficulty-chip');
+  chip.className = 'chip ' + diff.cls; chip.textContent = diff.label;
+  document.getElementById('question-text').textContent = q.question;
+
+  const order = shuffledOrder(q);
+  const cont = document.getElementById('options-container');
+  cont.innerHTML = '';
+  order.forEach((orig, pos) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    let mark = '';
+    if(answered){
+      btn.disabled = true;
+      if(orig === q.correct){ btn.classList.add('correct'); mark = '<span class="opt-mark">&#10003;</span>'; }
+      else if(orig === state.answers[q.id]){ btn.classList.add('wrong'); mark = '<span class="opt-mark">&#10007;</span>'; }
+      else btn.classList.add('dimmed');
+    }
+    btn.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+pos)}</span><span class="opt-text">${q.options[orig]}</span>${mark}`;
+    if(!answered){ btn.addEventListener('click', () => { state.answers[q.id] = orig; renderQuestion(); }); }
+    cont.appendChild(btn);
+  });
+
+  const expl = document.getElementById('explanation');
+  if(answered){
+    expl.classList.remove('hidden');
+    document.getElementById('expl-text').textContent = resolveOpts(q.explanation, order);
+  }
+  else expl.classList.add('hidden');
+
+  // Back always does something: a step back inside the test, and from the first
+  // question it returns to the menu rather than sitting there dead.
+  const prevBtn = document.getElementById('prev-btn');
+  const atStart = state.current === 0;
+  prevBtn.disabled = false;
+  prevBtn.style.visibility = 'visible';
+  prevBtn.innerHTML = atStart ? '&larr; Back to menu' : '&larr; Previous';
+  const action = document.getElementById('action-btn');
+  action.textContent = state.current === state.list.length - 1 ? 'See results' : 'Next question';
+  action.disabled = !answered;
+
+  let got = 0, done = 0;
+  state.list.forEach(x => { if(state.answers[x.id] !== undefined){ done++; if(state.answers[x.id]===x.correct) got++; } });
+  document.getElementById('score-tally').textContent = `Score so far: ${got} / ${done}`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('action-btn').addEventListener('click', () => {
+  if(state.current < state.list.length - 1){ state.current++; renderQuestion(); }
+  else showReview();
+});
+document.getElementById('prev-btn').addEventListener('click', () => {
+  if(state.current>0){ state.current--; renderQuestion(); }
+  else { document.getElementById('quiz-screen').classList.add('hidden');
+         document.getElementById('menu-screen').classList.remove('hidden');
+         window.scrollTo({top:0,behavior:'smooth'}); }
+});
+document.getElementById('exit-btn').addEventListener('click', () => { quiz.classList.add('hidden'); menu.classList.remove('hidden'); });
+document.getElementById('restart-btn').addEventListener('click', () => { review.classList.add('hidden'); menu.classList.remove('hidden'); });
+
+function weakestSection(){
+  let worst = SECTIONS[0], worstPct = 2;
+  SECTIONS.forEach(sec => {
+    const qs = state.list.filter(q => q.section === sec);
+    if(!qs.length) return;
+    const got = qs.filter(q => state.answers[q.id] === q.correct).length;
+    const p = got/qs.length;
+    if(p < worstPct){ worstPct = p; worst = sec; }
+  });
+  return worst;
+}
+
+function showReview(){
+  quiz.classList.add('hidden'); review.classList.remove('hidden');
+  const total = state.list.length;
+  let correct = 0;
+  state.list.forEach(q => { if(state.answers[q.id] === q.correct) correct++; });
+  const pct = total ? Math.round(correct/total*100) : 0;
+  document.getElementById('score-correct').textContent = correct;
+  document.getElementById('score-total').textContent = total;
+  document.getElementById('score-percent').textContent = pct;
+
+  // Word bands, not letters. Copy differs by sitting.
+  let band='', desc='';
+  const weakest = weakestSection();
+  if(IS_AFTER){
+    if(pct>=85){ band='Excellent'; desc='The facts have stuck. Your last step is to write the essay question out under timed conditions: one hour, three pages.'; }
+    else if(pct>=70){ band='Strong'; desc='Strong recall after the lessons. Look again at anything you missed, then write the essay out under time.'; }
+    else if(pct>=55){ band='Solid'; desc='A solid base. Your weakest area was ' + weakest + '. Go back to the lesson that covers it, then try the timed essay.'; }
+    else if(pct>=40){ band='Patchy'; desc='Some of it has stuck and some has not. Your weakest area was ' + weakest + '. Revisit that lesson, then take this again.'; }
+    else { band='Start again'; desc='The facts have not settled yet. Go back to the lessons, starting with ' + weakest + ', and work through them again before the exam.'; }
+  } else {
+    if(pct>=85){ band='Excellent'; desc='A strong start even before the lessons. Go to Lesson 1 and start turning these facts into an argument.'; }
+    else if(pct>=70){ band='Strong'; desc='You already know a lot of this. Go to Lesson 1, where you learn to use it.'; }
+    else if(pct>=55){ band='Solid'; desc='A decent base to build on. Go to Lesson 1 and start building the argument.'; }
+    else if(pct>=40){ band='Patchy'; desc='A normal starting point before studying a topic. Go to Lesson 1: that is exactly what it is for.'; }
+    else { band='Just starting'; desc='A low score before you have studied a topic is the normal place to begin, not a warning. Go straight to Lesson 1.'; }
+  }
+  document.getElementById('score-grade').textContent = band;
+  document.getElementById('grade-desc').textContent = desc;
+
+  // Check 1 tells the learner to note the score. Check 2 shows the comparison if we have it.
+  const cmp = document.getElementById('compare-line');
+  if(IS_AFTER){
+    const prior = priorScore();
+    if(prior !== null && state.filter === 'all'){
+      const diff = correct - prior;
+      const move = diff > 0 ? ('up ' + diff) : (diff < 0 ? ('down ' + (-diff)) : 'the same');
+      cmp.textContent = 'Before the lessons: ' + prior + ' out of 18. Now: ' + correct + ' out of 18. That is ' + move + '.';
+      cmp.classList.remove('hidden');
+    } else {
+      cmp.classList.add('hidden');
+    }
+  } else {
+    cmp.textContent = 'Write this score down. When you finish Lesson 5, the second check will compare against it.';
+    cmp.classList.remove('hidden');
+  }
+
+  const levelRows = document.getElementById('level-rows'); levelRows.innerHTML = '';
+  LEVELS.forEach(level => {
+    const qs = state.list.filter(q => q.tier === level);
+    if(!qs.length) return;
+    const got = qs.filter(q => state.answers[q.id] === q.correct).length;
+    const p = Math.round(got/qs.length*100);
+    levelRows.innerHTML += `<div class="breakdown-row"><div class="breakdown-name">${level}</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:${p}%"></div></div><div class="breakdown-score">${got}/${qs.length}</div></div>`;
+  });
+
+  const rows = document.getElementById('breakdown-rows'); rows.innerHTML = '';
+  SECTIONS.forEach(sec => {
+    const qs = state.list.filter(q => q.section === sec);
+    if(!qs.length) return;
+    const got = qs.filter(q => state.answers[q.id] === q.correct).length;
+    const p = Math.round(got/qs.length*100);
+    rows.innerHTML += `<div class="breakdown-row"><div class="breakdown-name">${sec}</div><div class="breakdown-bar"><div class="breakdown-fill" style="width:${p}%"></div></div><div class="breakdown-score">${got}/${qs.length}</div></div>`;
+  });
+
+  const cards = document.getElementById('review-cards'); cards.innerHTML = '';
+  state.list.forEach((q, i) => {
+    const your = state.answers[q.id];
+    const right = your === q.correct;
+    const card = document.createElement('div');
+    card.className = 'review-card ' + (right ? 'got' : 'missed');
+    let inner = `<div class="review-q">${i+1}. ${q.question}</div>`;
+    if(right){
+      inner += `<div class="review-a right"><span class="lab">Correct:</span> ${q.options[q.correct]}</div>`;
+    } else {
+      inner += `<div class="review-a yours-wrong"><span class="lab">Your answer:</span> ${your!==undefined ? q.options[your] : 'not answered'}</div>`;
+      inner += `<div class="review-a right"><span class="lab">Correct:</span> ${q.options[q.correct]}</div>`;
+    }
+    card.innerHTML = inner;
+    cards.appendChild(card);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildMenu();
+})();
+
+
+/* ---- MODE TOGGLE ---------------------------------------------------------
+   Injects its own button so there is no stray markup, and lives inside the
+   single script block so a first-to-last script extraction still parses. */
+(function(){
+  var NATIVE = "light";
+  try{ if(localStorage.getItem("kula-mode")==="alt"){ document.body.classList.add("alt"); } }catch(e){}
+  var SUN='<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/>';
+  var MOON='<path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/>';
+  var b=document.getElementById("mode-toggle");
+  if(!b){
+    b=document.createElement("button");
+    b.className="mode-toggle"; b.id="mode-toggle"; b.type="button";
+    b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" id="mode-icon"></svg><span id="mode-label"></span>';
+    document.body.appendChild(b);
+  }
+  var lab=document.getElementById("mode-label"), ic=document.getElementById("mode-icon");
+  function paint(){
+    var onAlt=document.body.classList.contains("alt");
+    var showing = onAlt ? (NATIVE==="dark" ? "light" : "dark") : NATIVE;
+    var offering = showing==="dark" ? "light" : "dark";
+    lab.textContent = offering==="light" ? "Light Mode" : "Dark Mode";
+    ic.innerHTML = offering==="light" ? SUN : MOON;
+    b.setAttribute("aria-pressed", onAlt ? "true" : "false");
+    b.setAttribute("aria-label", "Switch to " + offering + " mode");
+  }
+  b.addEventListener("click",function(){
+    var onAlt=document.body.classList.toggle("alt");
+    try{ localStorage.setItem("kula-mode", onAlt ? "alt" : "native"); }catch(e){}
+    paint();
+  });
+  paint();
+
+})();
+</script>
+</body>
+</html>
