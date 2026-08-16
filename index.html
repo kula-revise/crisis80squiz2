@@ -27,7 +27,7 @@
     --paper: #FBF6EB;   /* cards */
     --cut:   #FFFCF4;   /* insets, sources, carousels */
     --ink:   #1B2A33;   /* body text */
-    --clay:  #8C4A2F;   /* stage tags, quiet labels */
+    --clay:  #C2185B;   /* stage tags, quiet labels */
     --fade:  #7B7263;   /* muted text, captions */
     --a1: #B4622D;   --a1-rgb: 180,98,45;
     --a2: #1F6B58;   --a2-rgb: 31,107,88;
@@ -50,14 +50,14 @@
     --ink-deep:   #12202a;              /* --ink one step darker, button hover */
     --a2-deep:    #164C3F;              /* --a2 one step darker, button hover */
     --ok-bg:      rgba(var(--a2-rgb),0.13);  /* a correct option, a placed item */
-    --no-bg:      rgba(140,74,47,0.13);      /* a wrong option, a misplaced item */
+    --no-bg:      rgba(194,24,91,0.13);      /* a wrong option, a misplaced item */
     /* Skill chips. a = the entry-level skill (Extract, Argue, Evidence, Recall).
        b = the middle skill (Interpret, Understand). c = unassessed instinct.
        The top skill (Evaluate, Weigh, Apply) sits on a solid accent ground. */
     --chip-a-bg: rgba(var(--a1-rgb),0.16);  --chip-a-fg: var(--a1);
     --chip-b-bg: rgba(var(--a2-rgb),0.16);  --chip-b-fg: var(--a2);
     --chip-c-bg: rgba(0,0,0,0.06);
-    --scrim:  rgba(27,42,51,0.5);       /* modal backdrop */
+    --scrim:  rgba(23,24,26,0.5);       /* modal backdrop */
     --inset:  rgba(255,255,255,0.4);    /* sort column well */
 
     /* Legacy aliases. Older skins and the quiz shell reference these. */
@@ -166,20 +166,20 @@
 */
 
 :root {
-  --sand:  #E7E5DE;   /* page: drafting stone */
-  --paper: #FAF9F5;   /* cards: the sheet */
-  --cut:   #DFDDD4;   /* insets, sources, carousels */
-  --ink:   #211F26;
-  --clay:  #5E5A66;   /* stage tags, quiet labels */
-  --fade:  #625E6D;
+  --sand:  #E8EAEC;   /* page: plan paper, cool concrete */
+  --paper: #FFFFFF;   /* cards: the sheet */
+  --cut:   #DCDFE3;   /* insets, sources, carousels */
+  --ink:   #17181A;
+  --clay:  #4E5155;   /* stage tags, quiet labels */
+  --fade:  #5B5E63;
   /* aubergine for structure, viridian for anything the learner earned */
-  --a1: #5B3A6E;  --a1-rgb: 91,58,110;
-  --a2: #2C6B57;  --a2-rgb: 44,107,87;
+  --a1: #B23C0A;  --a1-rgb: 178,60,10;
+  --a2: #7A0FB0;  --a2-rgb: 122,15,176;
   /* The two hover steps are derived, not identity. Left in the engine
      block they kept the engine's own accent and stopped tracking this
      skin the moment it set its own. */
-  --ink-deep: #17161B;
-  --a2-deep:  #1F4D3F;
+  --ink-deep: #12100C;
+  --a2-deep:  #55077C;
   --serif: Georgia, 'Times New Roman', serif;
   --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --mono: ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace;
@@ -190,8 +190,8 @@
 body {
   font-family: var(--serif) !important;
   background-image:
-    repeating-linear-gradient(90deg, transparent 0 34px, rgba(33,31,38,0.030) 34px 35px),
-    repeating-linear-gradient(0deg,  transparent 0 34px, rgba(33,31,38,0.030) 34px 35px) !important;
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(23,24,26,0.030) 34px 35px),
+    repeating-linear-gradient(0deg,  transparent 0 34px, rgba(23,24,26,0.030) 34px 35px) !important;
 }
 h1, h2, h3 {
   font-family: var(--sans) !important;
@@ -204,7 +204,7 @@ h1, h2, h3 {
       appears on a card. */
 .card, .source, .stat-wrap, .carousel, .kt {
   border-radius: 0 !important;
-  border: 1px solid rgba(91,58,110,0.22) !important;
+  border: 1px solid rgba(178,60,10,0.22) !important;
   box-shadow: none !important;
 }
 .card, .stat-wrap, .carousel {
@@ -232,7 +232,7 @@ h1, h2, h3 {
   letter-spacing: 0.11em !important;
   text-transform: uppercase !important;
   background: var(--a1) !important;
-  color: #F7F4F8 !important;
+  color: #FFFFFF !important;
   border-radius: 0 !important;
   padding: 0.26rem 0.62rem !important;
   display: inline-block;
@@ -255,7 +255,7 @@ h1, h2, h3 {
   border: 2px solid var(--a1) !important;
   border-radius: 0 !important;
   padding: 1.25rem 1.3rem !important;
-  box-shadow: inset 0 0 0 1px var(--cut), inset 0 0 0 2px rgba(91,58,110,0.32) !important;
+  box-shadow: inset 0 0 0 1px var(--cut), inset 0 0 0 2px rgba(178,60,10,0.32) !important;
 }
 .source, .source p, .source li { font-family: var(--serif) !important; }
 .source-attr {
@@ -266,7 +266,7 @@ h1, h2, h3 {
   text-transform: none !important;
   color: var(--ink) !important;
   background: transparent;
-  border-bottom: 1px solid rgba(91,58,110,0.34);
+  border-bottom: 1px solid rgba(178,60,10,0.34);
   border-radius: 0;
   padding: 0 0 0.62rem 0;
   margin-bottom: 0.95rem;
@@ -327,13 +327,13 @@ h1, h2, h3 {
 /* 6. Buttons */
 .btn-begin {
   background: var(--a1) !important;
-  color: #F7F4F8 !important;
+  color: #FFFFFF !important;
   border: 2px solid var(--a1) !important;
   border-radius: 0 !important;
   font-family: var(--sans) !important;
   font-weight: 600 !important;
 }
-.btn-begin:hover { background: #452B54 !important; border-color: #452B54 !important; }
+.btn-begin:hover { background: #8A2D06 !important; border-color: #8A2D06 !important; }
 .primary-btn, .secondary-btn, .section-btn, .primary-btn-small {
   border-radius: 0 !important;
   font-family: var(--sans) !important;
@@ -358,7 +358,7 @@ h1, h2, h3 {
   padding-top: 0.6rem;
 }
 .figure img, .figure svg {
-  border: 1px solid rgba(91,58,110,0.4) !important;
+  border: 1px solid rgba(178,60,10,0.4) !important;
   border-radius: 0 !important;
 }
 /* Original illustrations are inline SVG so they inherit the thirteen tokens and
@@ -390,25 +390,25 @@ h1, h2, h3 {
    --chip-a-bg, --hair and --on-a2 rather than literals. So the patch block is
    redundant in those units and is correctly absent here. */
 body.dark {
-  --sand:  #17161B;
-  --paper: #201E26;
-  --cut:   #29272F;
-  --ink:   #EAE7EE;
-  --clay:  #A49EAE;
-  --fade:  #B8B2C2;
-  --a1: #B08BC7;  --a1-rgb: 176,139,199;
-  --a2: #6BBD9C;  --a2-rgb: 107,189,156;
+  --sand:  #12100C;
+  --paper: #1C1813;
+  --cut:   #272118;
+  --ink:   #F4EFE7;
+  --clay:  #ABA398;
+  --fade:  #9C948A;
+  --a1: #FF9433;  --a1-rgb: 255,148,51;
+  --a2: #C08BFF;  --a2-rgb: 192,139,255;
   /* On a dark ground a hover step goes lighter, not deeper. */
   --ink-deep: #FFFFFF;
-  --a2-deep:  #8FD3B5;
+  --a2-deep:  #D4ADFF;
 }
 body.dark {
   background-image:
-    repeating-linear-gradient(90deg, transparent 0 34px, rgba(234,231,238,0.038) 34px 35px),
-    repeating-linear-gradient(0deg,  transparent 0 34px, rgba(234,231,238,0.038) 34px 35px) !important;
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(244,239,231,0.038) 34px 35px),
+    repeating-linear-gradient(0deg,  transparent 0 34px, rgba(244,239,231,0.038) 34px 35px) !important;
 }
 body.dark .card, body.dark .source, body.dark .stat-wrap,
-body.dark .carousel, body.dark .kt { border-color: rgba(176,139,199,0.30) !important; }
+body.dark .carousel, body.dark .kt { border-color: rgba(255,148,51,0.30) !important; }
 body.dark .card, body.dark .stat-wrap, body.dark .carousel {
   background-color: var(--paper) !important;
   background-image:
@@ -420,13 +420,13 @@ body.dark .card, body.dark .stat-wrap, body.dark .carousel {
   background-position: 0 0 !important;
 }
 body.dark .source {
-  box-shadow: inset 0 0 0 1px var(--cut), inset 0 0 0 2px rgba(176,139,199,0.34) !important;
+  box-shadow: inset 0 0 0 1px var(--cut), inset 0 0 0 2px rgba(255,148,51,0.34) !important;
 }
-body.dark .source-attr { border-bottom-color: rgba(176,139,199,0.36); }
+body.dark .source-attr { border-bottom-color: rgba(255,148,51,0.36); }
 body.dark .stage-tag, body.dark .kt-label,
-body.dark .expl-label, body.dark .pop-label { color: #17161B !important; }
-body.dark .btn-begin { color: #17161B !important; }
-body.dark .btn-begin:hover { background: #C6A6D9 !important; border-color: #C6A6D9 !important; }
+body.dark .expl-label, body.dark .pop-label { color: #12100C !important; }
+body.dark .btn-begin { color: #12100C !important; }
+body.dark .btn-begin:hover { background: #FFB05E !important; border-color: #FFB05E !important; }
 /* ---- The two engine rules the token re-point cannot rescue ----------------
    Correction to the note above. engine/tokens.css re-points every DERIVED token,
    so the legacy state-colour patch block is redundant for options, chips and
@@ -439,15 +439,15 @@ body.dark .btn-begin:hover { background: #C6A6D9 !important; border-color: #C6A6
 body.dark .primary-btn {
   background: var(--cut) !important;
   color: var(--ink) !important;
-  border: 1px solid rgba(176,139,199,0.38) !important;
+  border: 1px solid rgba(255,148,51,0.38) !important;
 }
-body.dark .primary-btn:hover { background: #2C2934 !important; }
+body.dark .primary-btn:hover { background: #2C2419 !important; }
 body.dark .primary-btn .btn-title { color: var(--ink) !important; }
 body.dark .primary-btn .btn-sub   { color: var(--fade) !important; }
 body.dark .primary-btn .btn-num,
 body.dark .primary-btn .btn-arrow { color: var(--a1) !important; }
 body.dark .chip-apply {
-  background: rgba(234,231,238,0.16) !important;
+  background: rgba(244,239,231,0.16) !important;
   color: var(--ink) !important;
 }
 
@@ -458,10 +458,10 @@ body.dark .expl-text, body.dark .disc-body { color: var(--ink) !important; }
 body.dark .expl-text { font-size: 1rem !important; line-height: 1.75 !important; }
 
 body.dark .figure img {
-  border-color: rgba(176,139,199,0.4) !important;
+  border-color: rgba(255,148,51,0.4) !important;
   filter: brightness(0.9) contrast(1.02);
 }
-body.dark .figure svg { border-color: rgba(176,139,199,0.4) !important; }
+body.dark .figure svg { border-color: rgba(255,148,51,0.4) !important; }
 
 /* The toggle is fixed bottom right and lands on Continue on a short viewport.
    Kept above the 44px tap minimum at 360px, which is where this last failed. */
@@ -639,8 +639,8 @@ body { padding-bottom: 4.5rem !important; }
             the fill against the page  5.68 : 1
      dark   ink text on #93D98A       10.74 : 1
    ============================================================ */
-:root { --ok: #2A6335; --ok-rgb: 42,99,53; --on-ok: #FAF9F5; --no-line: #8C4A2F; }
-body.dark { --ok: #93D98A; --ok-rgb: 147,217,138; --on-ok: #17161B; --no-line: #F2B784; }
+:root { --ok: #2A6335; --ok-rgb: 42,99,53; --on-ok: #FFFFFF; --no-line: #C2185B; }
+body.dark { --ok: #93D98A; --ok-rgb: 147,217,138; --on-ok: #12100C; --no-line: #FF7A9C; }
 
 .option.correct, .option-btn.correct,
 body.dark .option.correct, body.dark .option-btn.correct {
@@ -662,11 +662,11 @@ body.dark .option.correct .opt-mark, body.dark .option-btn.correct .opt-mark {
 /* The wrong state takes the copper, never the strand's green. */
 .option.wrong, .option-btn.wrong,
 body.dark .option.wrong, body.dark .option-btn.wrong {
-  background: rgba(140,74,47,0.14) !important;
+  background: rgba(194,24,91,0.14) !important;
   border: 2px solid var(--no-line) !important;
   box-shadow: none !important;
 }
-body.dark .option.wrong, body.dark .option-btn.wrong { background: rgba(232,162,99,0.16) !important; }
+body.dark .option.wrong, body.dark .option-btn.wrong { background: rgba(255,122,156,0.16) !important; }
 .option.wrong .opt-letter, .option.wrong .opt-mark,
 .option-btn.wrong .opt-letter, .option-btn.wrong .opt-mark { color: var(--no-line) !important; }
 
@@ -686,10 +686,10 @@ body.dark .inter-item.ok span, body.dark .inter-item.ok .rank { color: var(--on-
 .inter-mark { font-weight: 700; font-size: 1.1rem; margin-left: 0.6rem; flex: 0 0 auto; }
 .inter-item.ok .inter-mark { color: var(--on-ok) !important; }
 .inter-item.no, body.dark .inter-item.no {
-  background: rgba(140,74,47,0.14) !important;
+  background: rgba(194,24,91,0.14) !important;
   border: 2px solid var(--no-line) !important;
 }
-body.dark .inter-item.no { background: rgba(232,162,99,0.16) !important; }
+body.dark .inter-item.no { background: rgba(255,122,156,0.16) !important; }
 .inter-item.no .inter-mark, .inter-item.no .rank { color: var(--no-line) !important; }
 .inter-should {
   display: block; margin-top: 0.3rem;
